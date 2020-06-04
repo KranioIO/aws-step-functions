@@ -8,12 +8,10 @@
 
 Esto actualizará tu item plugins en serverless.yml
 
-`sls plugin install -n serverless-python-requirements`
-`sls plugin install -n serverless-pseudo-parameters`
-`sls plugin install -n serverless-step-functions`
+`sls plugin install -n serverless-python-requirements`  `sls plugin install -n serverless-pseudo-parameters`  `sls plugin install -n serverless-step-functions`
 
 
-# Actualiza json de dependencias
+# Actualiza json de dependencias  
 `npm install`
 
 # Deploy
