@@ -2,8 +2,8 @@ import requests
 import json
 import os
 
-# URL = os.getenv('URL')
-URL = 'https://8p9jqny87b.execute-api.us-east-2.amazonaws.com/dev'
+# aquí deben ir tus endpoints.  idea: la url podría ser una variable de entorno, no así los endpoint que se mantienen.
+URL = 'https://8p97jqny87b.execute-api.us-east-2.amazonaws.com/dev'
 CREA_CLIENTE = '/crea_cliente'
 CREA_SOCIO = '/crea_socio'
 CREA_BENEFICIO = '/crea_beneficio'
