@@ -1,0 +1,54 @@
+# serverless.yml
+service: webinar-node-app
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  # aqui va la región de tu cuenta aws. ej: us-east-1
+  region: us-east-2
+  versionFunctions: false
+  deploymentBucket: 
+    # aquí debe ir el nombre de un bucket de S3 que determines para deployment. Ejemplo: mi_proyecto_serverless_s3
+    # si pones el mismo en cada archivo serverless, tu deploy por proyecto quedará ordenado y dentro del mismo bucket.
+    name: kranio-webinar 
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ec2:CreateNetworkInterface"
+        - "ec2:DescribeNetworkInterfaces"
+        - "ec2:DeleteNetworkInterface"
+      Resource: "*"
+    - Effect: "Allow"  
+      Action:
+        - "rds:*"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - events:putEvents
+      Resource: "*" # aquí va el arn de tu recurso Eventbdrige sobre el que ingresarás eventos
+
+functions:
+  app:
+    handler: main.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+    # aqui debes conecta tus funciones lambda a la vpc.
+    # vpc:
+    #   # aquí debes reemplazar por tus valores
+    #   securityGroupIds:
+    #     - sg-xxxxxxx
+    #   subnetIds:
+    #     - subnet-xxxxxx
+    #     - subnet-xxxxxx
+    #     - subnet-xxxxxx
+    # iamRoleStatements:
+    #   - Effect: "Allow"
+    #     Action:
+    #       # permisos para interactuar con vpc
+    #       - "ec2:CreateNetworkInterface"
+    #       - "ec2:DescribeNetworkInterfaces"
+    #       - "ec2:DeleteNetworkInterface"
+    #     Resource: # aquí debe ir el ARN del recurso sobre el que necesitas permisos
+

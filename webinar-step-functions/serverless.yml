@@ -1,0 +1,127 @@
+service: webinar-step-functions
+
+frameworkVersion: '1.51.0'
+provider:
+  name: aws
+  runtime: python3.7
+  stage: ${opt:stage, 'dev'}
+  region: us-east-2
+  versionFunctions: false
+  deploymentBucket: 
+    # aquí debe ir el nombre de un bucket de S3 que determines para deployment. Ejemplo: mi_proyecto_serverless_s3
+    # si pones el mismo en cada archivo serverless, tu deploy por proyecto quedará ordenado y dentro del mismo bucket.
+    name: kranio-webinar 
+  environment:
+    URL: https://8p9jqny87b.execute-api.us-east-2.amazonaws.com/dev
+  # estos son los permisos para escribir en dynamo
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+      - dynamodb:PutItem
+      - dynamodb:GetItem
+      - dynamodb:UpdateItem
+      # se recomienda especificar el recurso en específico en vez de wildcard
+      Resource: "*"
+
+package:
+  exclude:
+    - .monitoring/**
+    - .serverless/**
+    - node_modules/**
+    - stage-variables/**
+    - package-lock.json
+    - package.json
+
+custom:
+  prefix: '${self:service}-${self:provider.stage}'
+  # arn_prefix es un string que se repetiría muchas veces si no se parametriza. en dev.yml podrás ver qué contiene.
+  # según tus variables por ambiente, debes hacer un documento en caso de ser necesario.
+  arn_prefix: '${file(${self:provider.stage}.yml):arn_prefix}'
+  defaultErrorHandler:
+    ErrorEquals: ["States.ALL"]
+    Next: CatchError
+# funciones lambda
+functions:
+  recibeInscripcion:
+    handler: functions/recibe_inscripcion.handler
+    # el evento
+    events:
+      - eventBridge:
+          eventBus: arn:aws:events:#{AWS::Region}:#{AWS::AccountId}:event-bus/WebinarEventBus
+          pattern:
+            source:
+              - "kranio.event.crm"          
+  creaCliente:
+    handler: functions/crea_cliente.handler    
+  creaSocio:
+    handler: functions/crea_socio.handler
+  creaBeneficio:
+    handler: functions/crea_beneficio.handler
+  catchErrors:
+    handler: functions/catch_errors.handler
+
+# los step functiosn
+stepFunctions:
+  stateMachines:
+    CrearClienteCRM:
+      name: CrearClienteCRM
+      events:
+        - eventBridge:
+            eventBusName: WebinarEventBus
+            event:
+              source:
+                - "kranio.event.crm"
+      definition:
+        Comment: inicia proceso de inscripcion de cliente
+        StartAt: RecibeInscripcion
+        States:
+          RecibeInscripcion:
+            Type: Task
+            Resource: '${self:custom.arn_prefix}-recibeInscripcion'
+            Next: CreaCliente
+            Catch: 
+              - ${self:custom.defaultErrorHandler}
+          CreaCliente:
+            Type: Task
+            Resource: '${self:custom.arn_prefix}-creaCliente'
+            Next: CreaSocio
+            Catch: 
+              - ${self:custom.defaultErrorHandler}
+          CreaSocio:
+            Type: Task
+            Resource: '${self:custom.arn_prefix}-creaSocio'
+            Next: CreaBeneficio
+            Catch: 
+              - ${self:custom.defaultErrorHandler}
+          CreaBeneficio:
+            Type: Task
+            Resource: '${self:custom.arn_prefix}-creaBeneficio'
+            Catch: 
+              - ${self:custom.defaultErrorHandler}
+            End: true
+          CatchError:
+            Type: Task
+            Resource: '${self:custom.arn_prefix}-catchErrors' 
+            End: true
+
+resources:
+  Resources:
+    # los demás recursos aws se declaran bajo este item: resources.
+    TablaAuditoriaCRM:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: TablaAuditoriaCRM
+        AttributeDefinitions:
+          - AttributeName: rut
+            AttributeType: S
+        KeySchema:
+          - AttributeName: rut
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
+
+plugins:
+  - serverless-python-requirements
+  - serverless-step-functions
+  - serverless-pseudo-parameters
