@@ -17,7 +17,15 @@ Levanta una DB pivote y el EventBridge.
 
 En cada directorio encontrarás un README específico.
 
+## Herramientas
+
+- [Amazon Web Services](https://aws.amazon.com/)  
+- [Serverless Framework](https://www.serverless.com)  
+- [Cloudformation](https://aws.amazon.com/cloudformation/)  
+- [Boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)  
+
 ## Recomendaciones
+
 Lee cada comentario del código, sobre todo en lo que compete a los archivos serverless.yml ya que su indentación es muy estricta.
 
 
