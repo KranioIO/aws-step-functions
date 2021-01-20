@@ -19,10 +19,7 @@ var/
 
 # Serverless directories
 .serverless
-<<<<<<< HEAD:webinar-infra/.gitignore
-dev.yml
 # mariadb/
-=======
 __pycache__
 mariadb
->>>>>>> feat/dynamodb:.gitignore
+.package-lock.json
