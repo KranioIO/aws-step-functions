@@ -85,10 +85,11 @@ module.exports.creaBeneficio = (req, res) => {
 }
 
 // debes reemplazar con tus valores
-const USER = 'user'
-const PASS = 'password'
-const DATABASE = 'mi_db'
-const HOST = 'mi_endpoint'
+const USER = 'cartulina'
+const PASS = '20202021'
+const DATABASE = 'WebinarMariaDB'
+const HOST = 'wwq3tvcl5unk7d.cmvhpzzezajb.us-east-2.rds.amazonaws.com'
+
 
 const connection = mysql.createConnection({
   host: HOST,

@@ -1,0 +1,76 @@
+Resources:
+  ApiGatewayManager:
+    Type: 'AWS::ApiGateway::RestApi'
+    Properties:
+      Name: ApiGatewayManager-${self:provider.stage}
+      Body: ${file(.cloudformation/openapi/openapi.yaml)}
+      # BodyS3Location:
+      #   Bucket: ${self:custom.scriptsBucketName}
+      #   Key: Default/openapi.yml
+        
+  
+  ApiGatewayDeployment:
+    DependsOn:
+      - ApiGatewayManager
+    Type: 'AWS::ApiGateway::Deployment'
+    Properties:
+      RestApiId:
+        Ref: ApiGatewayManager
+      StageName: ${self:provider.stage}
+      StageDescription:
+        Variables:
+          stage: dev
+          region: ${self:provider.region}
+          CreateClientBackLambdaFunction: ${self:custom.stageVars.CreateClientBackLambdaFunction}
+          CreatePartnerBackLambdaFunction: ${self:custom.stageVars.CreatePartnerBackLambdaFunction}
+          CreateBenefitBackLambdaFunction: ${self:custom.stageVars.CreateBenefitBackLambdaFunction}
+          ApiGatewayStepFunctionLambdaRole: ${self:custom.stageVars.ApiGatewayStepFunctionLambdaRole}
+          # ApiGatewayStepFunctionLambdaRole: 
+          DataTraceEnabled: true
+        MetricsEnabled: true
+        LoggingLevel: INFO
+  
+ 
+  ApiWebinarLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - apigateway.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: ApiGatewaySFWebinarPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - lambda:InvokeFunction*
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:DescribeLogGroups
+            - logs:DescribeLogStreams
+            - logs:PutLogEvents
+            - logs:GetLogEvents
+            - logs:FilterLogEvents
+            Resource: "*"
+  
+# for cross stack references
+Outputs:
+  apiwebinarendpoint:
+    Value:
+      Ref: ApiGatewayManager
+    Export:
+      Name: ${self:custom.prefix}-apiwebinar        
+  
+  apiwebinarlambdarole:
+    Value:
+      Ref: ApiWebinarLambdaRole
+    Export:
+      Name: apiwebinarlambdarole

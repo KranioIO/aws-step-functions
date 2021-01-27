@@ -1,10 +1,13 @@
-
 {
-  "nombre": "francisco",
-  "apellido": "gonzalez",
-  "rut": "21274737-3",
-  "telefono": 984738593,
-  "mail": "frang@micorreo.com",
-  "sucursal": "estacion central",
-  "quiereTarjeta": "no"
+  "payloadApp": {
+    "name": "francisco",
+    "lastname": "gonzalez",
+    "rut": "21274737-3",
+    "phone": 984738593,
+    "mail": "frang@micorreo.com",
+    "store": "estacion central",
+    "wantsBenefit": false,
+    "origin": "app"
+  },
+  "payloadWeb": 
 }

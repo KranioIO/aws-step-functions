@@ -1,0 +1,30 @@
+Resources:
+  ApiGatewaySFApiKey:
+    Type: 'AWS::ApiGateway::ApiKey'
+    DependsOn:
+      - UsagePlan
+    Properties:
+      Name: ${self:custom.prefix}-ApiGatewaySFApiKey
+      Description: API KEY PARA WEBINAR SF
+      Enabled: 'true'
+      StageKeys:
+        - RestApiId:
+            Ref: ApiGatewayManager
+          StageName: ${self:provider.stage}
+  usagePlanKey:
+    Type: 'AWS::ApiGateway::UsagePlanKey'
+    DependsOn:
+      - ApiGatewaySFApiKey
+    Properties:
+      KeyId:
+        Ref: ApiGatewaySFApiKey
+      KeyType: API_KEY
+      UsagePlanId:
+        Ref: UsagePlan
+
+Outputs:
+  apiKeyId:
+    Value:
+      Ref: ApiGatewaySFApiKey
+    Export:
+      Name: ${self:custom.prefix}-ApiGatewaySFApiKey

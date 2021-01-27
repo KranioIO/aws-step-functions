@@ -22,4 +22,5 @@ var/
 # mariadb/
 __pycache__
 mariadb
-.package-lock.json
+package-lock.json
+services/audit
