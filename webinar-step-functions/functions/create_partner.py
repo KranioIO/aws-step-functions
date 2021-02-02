@@ -9,7 +9,7 @@ def handler(message, context):
         print(context)
         print('[crea clientes] payload entrada para crear socio: ', message)
         crm_service = CRMService(message)
-        r = crm_service.create_partner(message)
+        r = crm_service.create_partner()
         # return r
         print(r)
         return {

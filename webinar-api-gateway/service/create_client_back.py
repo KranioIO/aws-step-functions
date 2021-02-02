@@ -19,20 +19,3 @@ def handler(message, context):
         return response_success(res["success"], res["message"]) 
     except Exception as e:
         print("Exception: ", e)
-
-
-# message={
-#     "name": "leonardo",
-#     "lastname": "aceituno",
-#     "rut": "4758433-0",
-#     "phone": 987566787,
-#     "mail": "leoace@micorreo.com",
-#     "store": "la florida",
-#     "wantsBenefit": True,
-#     "origin": "app"
-#   }
-
-# res = handler(message, None)
-# print(res)
-
-

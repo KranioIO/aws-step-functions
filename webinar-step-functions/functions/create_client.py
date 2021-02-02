@@ -5,12 +5,9 @@ from services.crm_service import CRMService
 def handler(message, context):
     try:
 
-        print("Message: ", message)
-        print(type(message))
-        print('[crea clientes] payload entrada para crear cliente: ', message)
         crm_service = CRMService(message)
-        r = crm_service.create_client(message)
-        print(r)
+        r = crm_service.create_client()
+        # print(r)
         return message
     except Exception as e:
         print ("Exception: ", e)

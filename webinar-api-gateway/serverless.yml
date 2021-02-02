@@ -8,7 +8,6 @@ custom:
     CreateClientBackLambdaFunction: ${self:custom.prefix}-createClientBack
     CreatePartnerBackLambdaFunction: ${self:custom.prefix}-createPartnerBack
     CreateBenefitBackLambdaFunction: ${self:custom.prefix}-createBenefitBack
-    # ApiGatewayStepFunctionLambdaRole: ${self:custom.prefix}-ApiWebinarLambdaRole
     ApiGatewayStepFunctionLambdaRole: !Ref ApiWebinarLambdaRole
 provider:
   name: aws

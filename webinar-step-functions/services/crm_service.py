@@ -13,51 +13,33 @@ class CRMService:
     def __init__(self, payload):
         self.payload = payload
 
-    def create_client(self, payload):
-        print("create client payload: ", payload)
+    def create_client(self):
         try:
-            r = requests.post(url=URL+CREATE_CLIENT, data=json.dumps(payload))
-            print("response: ", r.text, r.status_code)
+            r = requests.post(url=URL+CREATE_CLIENT, data=json.dumps(self.payload))
             if r.status_code != 200:
-                print(r)
                 return Exception (r.text)
-            # else:
-                # print
             return json.loads(r.text)
         except Exception as e:
-            print("Exception: ", e)
             return e
             
 
-    def create_partner(self, payload):
-        print("create partner payload: ", payload)
+    def create_partner(self):
         try:
-            r = requests.post(url=URL+CREATE_PARTNER, data=json.dumps(payload))
-            print("response: ", r.text, r.status_code)
+            r = requests.post(url=URL+CREATE_PARTNER, data=json.dumps(self.payload))
             if r.status_code != 200:
-                print(r)
                 return Exception (r.text)
-            # else:
-                # print
             return json.loads(r.text)
         except Exception as e:
-            print("Exception: ", e)
             return e
             
 
 
-    def create_benefit(self, payload):
-        print("create benefit payload: ", payload)
+    def create_benefit(self):
         try:
-            r = requests.post(url=URL+CREATE_BENEFIT, data=json.dumps(payload))
-            print("response: ", r.text, r.status_code)
+            r = requests.post(url=URL+CREATE_BENEFIT, data=json.dumps(self.payload))
             if r.status_code != 200:
-                print(r)
                 return Exception (r.text)
-            # else:
-                # print
             return json.loads(r.text)
         except Exception as e:
-            print("Exception: ", e)
             return e
             

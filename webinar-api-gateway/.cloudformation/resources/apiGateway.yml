@@ -4,10 +4,7 @@ Resources:
     Properties:
       Name: ApiGatewayManager-${self:provider.stage}
       Body: ${file(.cloudformation/openapi/openapi.yaml)}
-      # BodyS3Location:
-      #   Bucket: ${self:custom.scriptsBucketName}
-      #   Key: Default/openapi.yml
-        
+       
   
   ApiGatewayDeployment:
     DependsOn:
@@ -17,6 +14,9 @@ Resources:
       RestApiId:
         Ref: ApiGatewayManager
       StageName: ${self:provider.stage}
+      # variables de stage. las estamos referenciando.
+      # los string que almacenan están en serverless.yml
+      # en custom.stageVars
       StageDescription:
         Variables:
           stage: dev
@@ -25,12 +25,14 @@ Resources:
           CreatePartnerBackLambdaFunction: ${self:custom.stageVars.CreatePartnerBackLambdaFunction}
           CreateBenefitBackLambdaFunction: ${self:custom.stageVars.CreateBenefitBackLambdaFunction}
           ApiGatewayStepFunctionLambdaRole: ${self:custom.stageVars.ApiGatewayStepFunctionLambdaRole}
-          # ApiGatewayStepFunctionLambdaRole: 
           DataTraceEnabled: true
         MetricsEnabled: true
         LoggingLevel: INFO
   
- 
+#  permiso para que api gateway pueda ejecutar funciones lambda
+# si bien todo esto está dentro de un mismo stack de cloudformation
+# en aws los permisos se deben explicitar.  por defecto nada tiene
+# permiso, a menos que lo declares.
   ApiWebinarLambdaRole:
     Type: AWS::IAM::Role
     Properties:

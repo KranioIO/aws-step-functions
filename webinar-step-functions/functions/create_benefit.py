@@ -7,7 +7,7 @@ def handler(message, context):
     try:
         print('[crea clientes] payload entrada para crear beneficio: ', message)
         crm_service = CRMService(message)
-        r = crm_service.create_benefit(message)
+        r = crm_service.create_benefit()
         # return r
         print(r)
         return message
