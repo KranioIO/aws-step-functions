@@ -1,6 +1,11 @@
-db_host: ww1l8s1mjibrav8.cmvhpzzezajb.us-east-2.rds.amazonaws.com
-db_user: cartulina
-db_pass: 20202021
+db_host: string
+db_user: string
+db_pass: string
 db_port: 3306
+# nombre de la DB segun se indicó en serverless.yml
 db_name: WebinarMariaDB
+# se compone un string que permite tener el identificador unico de los recursos de tipo
+# funciones dentro del proyecto.  con esto podemos referir el proyecto hacia las
+# funciones lambda que declaremos.  posteriormente solo se deberá llamar la referencia
+# al prefijo, añadiendo luego solo el nombre de la función.
 arn_prefix: arn:aws:lambda:${self:provider.region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}

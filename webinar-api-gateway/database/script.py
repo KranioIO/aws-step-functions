@@ -1,3 +1,7 @@
+"""
+script con statements SQL parametrizables para crear las tablas
+"""
+
 CREATE_TABLE_CLIENTS = """ 
     CREATE TABLE IF NOT EXISTS CLIENTS 
     (name varchar(25), 
@@ -32,7 +36,3 @@ INSERT_PARTNER = """
 INSERT_BENEFIT = """ 
     INSERT INTO BENEFITS (rut, wantsBenefit) 
     VALUES (%s, %s) """
-
-# TUPLE_CLIENT=
-# TUPLE_PARTNER=
-# TUPLE_BENEFICIARY=

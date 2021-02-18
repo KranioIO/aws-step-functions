@@ -16,7 +16,6 @@ provider:
 package:
   excludeDevDependencies: false
 
-
 custom:
   prefix: '${self:service}-${self:provider.stage}'
   # arn_prefix es un string que se repetiría muchas veces si no se parametriza. en dev.yml podrás ver qué contiene.
@@ -42,6 +41,9 @@ functions:
 stepFunctions:
   stateMachines:
     CreateClientCRM:
+      # aqui indicamos que el state machine se inicia cuando 
+      # ocurre el evento eventBridge que tiene ese eventBusName y 
+      # source en específico
       name: CreateClientCRM
       events:
         - eventBridge:
@@ -50,9 +52,16 @@ stepFunctions:
               source:
                 - "kranio.event.crm"
       definition:
+        # aqui indicamos que el state machine parte con este paso.
         Comment: inicia proceso de inscripcion de cliente
         StartAt: ReceiveLead
         States:
+          # ahora indicamos los stados.
+          # type indica que estos pasos son tareas.
+          # resource indica el arn de la función lambda que 
+          # se debe ejcutar en este paso
+          # next indica el paso que viene
+          # catch indica a qué función llamamos si ocurre un error
           ReceiveLead:
             Type: Task
             Resource: '${self:custom.arn_prefix}-receiveLead'

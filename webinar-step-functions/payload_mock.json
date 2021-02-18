@@ -1,13 +1,23 @@
 {
   "payloadApp": {
-    "name": "francisco",
-    "lastname": "gonzalez",
-    "rut": "21274737-3",
-    "phone": 984738593,
-    "mail": "frang@micorreo.com",
-    "store": "estacion central",
+    "name": "Camila",
+    "lastname": "Saavedra",
+    "rut": "9891283-0",
+    "phone": 56983747263,
+    "mail": "csaavedra@micorreo.com",
+    "store": "est_central",
     "wantsBenefit": false,
     "origin": "app"
+
   },
-  "payloadWeb": 
+  "payloadWeb": {
+    "name": "camila",
+    "lastname": "bustamante",
+    "rut": "23432345-5",
+    "phone": 967654567,
+    "mail": "camila@micorreo.com",
+    "store": "la_florida",
+    "wantsBenefit": true,
+    "origin": "web"
+  }
 }
