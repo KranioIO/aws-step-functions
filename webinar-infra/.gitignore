@@ -24,3 +24,4 @@ __pycache__
 mariadb
 package-lock.json
 .db.odb
+.env
