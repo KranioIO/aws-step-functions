@@ -10,6 +10,9 @@ client = boto3.client('events')
 with open("payload_mock.json", "r") as f:
             payload_mock = json.load(f)
 
+print(type(payload_mock["payloadApp"]))
+print(json.dumps(payload_mock["payloadApp"]))
+
 response = client.put_events(
     Entries=[
         {
@@ -19,7 +22,7 @@ response = client.put_events(
                 'string',
             ],
             'DetailType': 'Inscripcion para CRM ',
-            'Detail': json.dumps(payload_mock),
+            'Detail': json.dumps(payload_mock["payloadApp"]),
             'EventBusName': 'WebinarEventBus'
         },
     ]

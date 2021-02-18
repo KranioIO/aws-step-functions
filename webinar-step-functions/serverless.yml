@@ -1,36 +1,20 @@
 service: webinar-step-functions
 
-frameworkVersion: '1.51.0'
+# frameworkVersion: '2.3.0'
 provider:
   name: aws
   runtime: python3.7
   stage: ${opt:stage, 'dev'}
   region: us-east-2
+  prefix: ${self:service}-${self:provider.stage}
   versionFunctions: false
   deploymentBucket: 
     # aquí debe ir el nombre de un bucket de S3 que determines para deployment. Ejemplo: mi_proyecto_serverless_s3
     # si pones el mismo en cada archivo serverless, tu deploy por proyecto quedará ordenado y dentro del mismo bucket.
     name: kranio-webinar 
-  environment:
-    URL: https://8p9jqny87b.execute-api.us-east-2.amazonaws.com/dev
-  # estos son los permisos para escribir en dynamo
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-      - dynamodb:PutItem
-      - dynamodb:GetItem
-      - dynamodb:UpdateItem
-      # se recomienda especificar el recurso en específico en vez de wildcard
-      Resource: "*"
 
 package:
-  exclude:
-    - .monitoring/**
-    - .serverless/**
-    - node_modules/**
-    - stage-variables/**
-    - package-lock.json
-    - package.json
+  excludeDevDependencies: false
 
 custom:
   prefix: '${self:service}-${self:provider.stage}'
@@ -42,29 +26,25 @@ custom:
     Next: CatchError
 # funciones lambda
 functions:
-  recibeInscripcion:
-    handler: functions/recibe_inscripcion.handler
-    # el evento
-    events:
-      - eventBridge:
-          eventBus: arn:aws:events:#{AWS::Region}:#{AWS::AccountId}:event-bus/WebinarEventBus
-          pattern:
-            source:
-              - "kranio.event.crm"          
-  creaCliente:
-    handler: functions/crea_cliente.handler    
-  creaSocio:
-    handler: functions/crea_socio.handler
-  creaBeneficio:
-    handler: functions/crea_beneficio.handler
+  receiveLead:
+    handler: functions/receive_lead.handler  
+  createClient:
+    handler: functions/create_client.handler    
+  createPartner:
+    handler: functions/create_partner.handler
+  createBenefit:
+    handler: functions/create_benefit.handler
   catchErrors:
     handler: functions/catch_errors.handler
 
 # los step functiosn
 stepFunctions:
   stateMachines:
-    CrearClienteCRM:
-      name: CrearClienteCRM
+    CreateClientCRM:
+      # aqui indicamos que el state machine se inicia cuando 
+      # ocurre el evento eventBridge que tiene ese eventBusName y 
+      # source en específico
+      name: CreateClientCRM
       events:
         - eventBridge:
             eventBusName: WebinarEventBus
@@ -72,30 +52,37 @@ stepFunctions:
               source:
                 - "kranio.event.crm"
       definition:
+        # aqui indicamos que el state machine parte con este paso.
         Comment: inicia proceso de inscripcion de cliente
-        StartAt: RecibeInscripcion
+        StartAt: ReceiveLead
         States:
-          RecibeInscripcion:
+          # ahora indicamos los stados.
+          # type indica que estos pasos son tareas.
+          # resource indica el arn de la función lambda que 
+          # se debe ejcutar en este paso
+          # next indica el paso que viene
+          # catch indica a qué función llamamos si ocurre un error
+          ReceiveLead:
             Type: Task
-            Resource: '${self:custom.arn_prefix}-recibeInscripcion'
-            Next: CreaCliente
+            Resource: '${self:custom.arn_prefix}-receiveLead'
+            Next: CreateClient
             Catch: 
               - ${self:custom.defaultErrorHandler}
-          CreaCliente:
+          CreateClient:
             Type: Task
-            Resource: '${self:custom.arn_prefix}-creaCliente'
-            Next: CreaSocio
+            Resource: '${self:custom.arn_prefix}-createClient'
+            Next: CreatePartner
             Catch: 
               - ${self:custom.defaultErrorHandler}
-          CreaSocio:
+          CreatePartner:
             Type: Task
-            Resource: '${self:custom.arn_prefix}-creaSocio'
-            Next: CreaBeneficio
+            Resource: '${self:custom.arn_prefix}-createPartner'
+            Next: CreateBenefit
             Catch: 
               - ${self:custom.defaultErrorHandler}
-          CreaBeneficio:
+          CreateBenefit:
             Type: Task
-            Resource: '${self:custom.arn_prefix}-creaBeneficio'
+            Resource: '${self:custom.arn_prefix}-createBenefit'
             Catch: 
               - ${self:custom.defaultErrorHandler}
             End: true
@@ -104,24 +91,32 @@ stepFunctions:
             Resource: '${self:custom.arn_prefix}-catchErrors' 
             End: true
 
-resources:
-  Resources:
-    # los demás recursos aws se declaran bajo este item: resources.
-    TablaAuditoriaCRM:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: TablaAuditoriaCRM
-        AttributeDefinitions:
-          - AttributeName: rut
-            AttributeType: S
-        KeySchema:
-          - AttributeName: rut
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 2
-          WriteCapacityUnits: 2
+  Outputs:
+    CreateClientLambdaFunctionQualifiedArn:
+      Value:
+        Fn::GetAtt:
+          - CreateClientLambdaFunctionQualifiedArn
+          - Arn
+      Export:
+        Name: ${self:custom.prefix}-CreateClientLambdaFunction
+    CreatePartnerLambdaFunctionQualifiedArn:
+      Value:
+        Fn::GetAtt:
+          - CreatePartnerLambdaFunctionQualifiedArn
+          - Arn
+      Export:
+        Name: ${self:custom.prefix}-CreatePartnerLambdaFunction
+    CreateBenefitLambdaFunctionQualifiedArn:
+      Value:
+        Fn::GetAtt:
+          - CreateBenefitLambdaFunctionQualifiedArn
+          - Arn
+      Export:
+        Name: ${self:custom.prefix}-CreateBenefitLambdaFunction
 
 plugins:
   - serverless-python-requirements
   - serverless-step-functions
   - serverless-pseudo-parameters
+  - serverless-plugin-include-dependencies
+  - serverless-dotenv-plugin

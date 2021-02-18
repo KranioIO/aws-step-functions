@@ -1,0 +1,20 @@
+Resources:
+  UsagePlan:
+    Type: 'AWS::ApiGateway::UsagePlan'
+    DependsOn:
+      - ApiGatewayDeployment
+    Properties:
+      ApiStages:
+        - ApiId:
+            Ref: ApiGatewayManager
+          Stage: ${self:provider.stage}
+      Description: Custom usage plan
+      Quota:
+        Limit: 1000
+        Period: MONTH
+      Throttle:
+        BurstLimit: 200
+        RateLimit: 10000
+      UsagePlanName: api-gaetway-webinar-usage-plan
+      # UsagePlanName: ${self:custom.prefix}-UsagePlan
+      # esto permite usar las api keys de clientes y colectivosd      

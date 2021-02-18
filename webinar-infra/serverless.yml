@@ -32,14 +32,3 @@ resources:
         Type: AWS::Events::EventBus
         Properties:
           Name: WebinarEventBus
-      
-      # aquí debes configurar un NAT Gateway para que tu Api Gateway pueda comunicarse con la base de datos
-      # WebinarNatGateway:
-      #   Type: AWS::EC2::NatGateway
-      #   Properties: 
-      #     AllocationId: eipalloc-xxxxxxxxxxx # debes reemplazar por el tuyo
-      #     SubnetId: 'subnet-xxxxxxxxxx' # debes reemplazar por el tuyo
-      #     Tags: 
-      #       # esto se usa para identificar el origen de tu recurso aws
-      #       - Key: 'MiProyecto'
-      #         Value: 'Nombre'

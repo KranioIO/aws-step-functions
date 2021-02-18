@@ -1,10 +1,23 @@
-
 {
-  "nombre": "francisco",
-  "apellido": "gonzalez",
-  "rut": "21274737-3",
-  "telefono": 984738593,
-  "mail": "frang@micorreo.com",
-  "sucursal": "estacion central",
-  "quiereTarjeta": "no"
+  "payloadApp": {
+    "name": "Camila",
+    "lastname": "Saavedra",
+    "rut": "9891283-0",
+    "phone": 56983747263,
+    "mail": "csaavedra@micorreo.com",
+    "store": "est_central",
+    "wantsBenefit": false,
+    "origin": "app"
+
+  },
+  "payloadWeb": {
+    "name": "camila",
+    "lastname": "bustamante",
+    "rut": "23432345-5",
+    "phone": 967654567,
+    "mail": "camila@micorreo.com",
+    "store": "la_florida",
+    "wantsBenefit": true,
+    "origin": "web"
+  }
 }

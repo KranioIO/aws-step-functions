@@ -1,0 +1,44 @@
+service: webinar-api-gateway
+
+# frameworkVersion: '>=1.51.0'
+
+custom:
+  prefix: ${self:service}-${self:provider.stage}
+  stageVars:
+    CreateClientBackLambdaFunction: ${self:custom.prefix}-createClientBack
+    CreatePartnerBackLambdaFunction: ${self:custom.prefix}-createPartnerBack
+    CreateBenefitBackLambdaFunction: ${self:custom.prefix}-createBenefitBack
+    ApiGatewayStepFunctionLambdaRole: !Ref ApiWebinarLambdaRole
+provider:
+  name: aws
+  region: ${opt:region, 'us-east-2'}
+  runtime: python3.8
+  stage: ${opt:stage, 'dev'}
+  stackTags:
+    "Proyecto": "api-webinar-step-functions"
+package:
+  excludeDevDependencies: false
+
+functions:  
+  createClientBack:
+    handler: service/create_client_back.handler    
+  createPartnerBack:
+    handler: service/create_partner_back.handler
+  createBenefitBack:
+    handler: service/create_benefit_back.handler
+  catchErrorsBack:
+    handler: service/catch_errors_back.handler
+
+resources:
+  - ${file(.cloudformation/resources/apiGateway.yml)}
+  - ${file(.cloudformation/resources/usagePlan.yml)}
+  - ${file(.cloudformation/resources/apiKey.yml)}
+
+useDotenv: true
+
+plugins:
+  - serverless-python-requirements
+  - serverless-step-functions
+  - serverless-pseudo-parameters
+  - serverless-plugin-include-dependencies
+  - serverless-dotenv-plugin

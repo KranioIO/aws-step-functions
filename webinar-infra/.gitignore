@@ -1,0 +1,8 @@
+node_modules
+# Distribution / packaging
+# Serverless directories
+.serverless
+# mariadb/
+__pycache__
+mariadb
+package-lock.json

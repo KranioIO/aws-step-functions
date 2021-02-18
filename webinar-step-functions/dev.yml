@@ -1,0 +1,1 @@
+arn_prefix: arn:aws:lambda:${self:provider.region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}
