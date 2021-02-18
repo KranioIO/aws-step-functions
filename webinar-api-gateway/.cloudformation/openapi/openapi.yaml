@@ -3,7 +3,7 @@ info:
   title: "testapi"
   version: "2021-01-21T15:44:04Z"
 servers:
-  - url: "https://{id-de-api}.execute-api.us-east-2.amazonaws.com/{basePath}"
+  - url: "https://{id-de-api}.execute-api.{tu-region}.amazonaws.com/{basePath}"
     variables:
       basePath:
         default: "/dev"
@@ -33,11 +33,11 @@ paths:
       security:
         - api_key: []
       x-amazon-apigateway-integration:
-        uri: arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:193024568733:function:${stageVariables.CreateClientBackLambdaFunction}/invocations
+        uri: arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:{tu-ACCOUNT-ID-aqui}:function:${stageVariables.CreateClientBackLambdaFunction}/invocations
         responses:
           default:
             statusCode: 200
-        credentials: arn:aws:iam::193024568733:role/${stageVariables.ApiGatewayStepFunctionLambdaRole}
+        credentials: arn:aws:iam::{tu-ACCOUNT-ID-aqui}:role/${stageVariables.ApiGatewayStepFunctionLambdaRole}
         httpMethod: POST
         passthroughBehavior: "when_no_match"
         type: aws_proxy
@@ -63,11 +63,11 @@ paths:
       security:
         - api_key: []
       x-amazon-apigateway-integration:
-        uri: arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:193024568733:function:${stageVariables.CreatePartnerBackLambdaFunction}/invocations
+        uri: arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:{tu-ACCOUNT-ID-aqui}:function:${stageVariables.CreatePartnerBackLambdaFunction}/invocations
         responses:
           default:
             statusCode: 200
-        credentials: arn:aws:iam::193024568733:role/${stageVariables.ApiGatewayStepFunctionLambdaRole}
+        credentials: arn:aws:iam::{tu-ACCOUNT-ID-aqui}:role/${stageVariables.ApiGatewayStepFunctionLambdaRole}
         httpMethod: POST
         passthroughBehavior: "when_no_match"
         type: aws_proxy
@@ -93,11 +93,11 @@ paths:
       security:
         - api_key: []
       x-amazon-apigateway-integration:
-        uri: arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:193024568733:function:${stageVariables.CreateBenefitBackLambdaFunction}/invocations
+        uri: arn:aws:apigateway:us-east-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-2:{tu-ACCOUNT-ID-aqui}:function:${stageVariables.CreateBenefitBackLambdaFunction}/invocations
         responses:
           default:
             statusCode: 200
-        credentials: arn:aws:iam::193024568733:role/${stageVariables.ApiGatewayStepFunctionLambdaRole}
+        credentials: arn:aws:iam::{tu-ACCOUNT-ID-aqui}:role/${stageVariables.ApiGatewayStepFunctionLambdaRole}
         httpMethod: POST
         passthroughBehavior: "when_no_match"
         type: aws_proxy
